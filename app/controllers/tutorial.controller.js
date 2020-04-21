@@ -1,5 +1,6 @@
 const db = require("../models");
 const Tutorial = db.tutorials;
+const Author = db.authors;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
@@ -16,11 +17,20 @@ exports.create = (req, res) => {
       title: req.body.title,
       description: req.body.description,
       published: req.body.published ? req.body.published : false,
-      authorId : req.body.authorId
-    };
-  
+      author :  {
+        name:req.body.author.name,
+        age:req.body.author.age
+      }
+      };
+
+
+    
     // Save Tutorial in the database
-    Tutorial.create(tutorial)
+    Tutorial.create(tutorial,
+       {
+        include:[Author]
+      }
+    )
       .then(data => {
         res.send(data);
       })
@@ -31,6 +41,9 @@ exports.create = (req, res) => {
         });
       });
   };
+ 
+  
+  
 
   exports.findAll = (req, res) => {
    // const title = req.query.title;
